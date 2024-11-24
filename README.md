@@ -2,26 +2,26 @@
 This is a helper process to vertically stitch images together using ImageMagick
 
 ## Installation 
-Python >= 3.5 and [ImageMagic](https://imagemagick.org/script/download.php) need to be installed.
+Python >= 3.10 and [ImageMagic](https://imagemagick.org/script/download.php) need to be installed.
 
 Then the utility can be installed by running `pip install git+https://github.com/ShoHabby/file-stitcher`
 
 ## Usage
-The program looks for subfolder in the working directory, then merges all the PNG images found within, in alphabetical order, and outputs them to a file of the same name as the subfolder in the working directory.
+`stitcher [-v|-h] [-a] [-r] [-o %output_name%] [*files to stitch]`
 
-This means that with this folder structure:
-```
-- MyFolder\
- - AAA\
-  - MyImage1.png
-  - MyImage2.png
- - BBB\
-  - MyImage3.png
-  - MyImage4.png
-```
-Running `stitcher` from `MyFolder\` result in the creation of the folloing files:
-```
-- MyFolder\
- - AAA.png
- - BBB.png
-```
+`-v` or `-h` must always be the first parameter passed to the script, they are mutually exclusive
+
+`-a` Means that the script will look through subfolders of the directory the script was called from, find images within them, stitch them according to settings,
+and output them to the directory the script was called from. While using this parameter, files should not be specified.
+The output file names will be that of the directory they were stitched from.
+
+`-r` Will reverse the order of the stitching. By default, horizontal stitching is reversed (right to left) as the intention is to stitch manga pages.
+Passing that parameter means
+
+`-o` Allows specifying the name of the output file when manually specifying the files to stitch.
+The output name does not need to contain the file extension.
+If not specified, the output name will be the concatenation of all the input file names.
+
+When not using `-a`, files must be specified last. At least two files must be specified, but there is no upper limit.
+The file paths may be absolute or relative to the directory the script is called from.
+The output file name will be the concatenation of all the input file names.
