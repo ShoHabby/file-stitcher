@@ -13,10 +13,9 @@ Then the utility can be installed by running `pip install git+https://github.com
 
 `-a` Means that the script will look through subfolders of the directory the script was called from, find images within them, stitch them according to settings,
 and output them to the directory the script was called from. While using this parameter, files should not be specified.
-The output file names will be that of the directory they were stitched from.
+The output file names will be that of the directory they were stitched from. The `-o` parameter cannot be used with this either.
 
 `-r` Will reverse the order of the stitching. By default, horizontal stitching is reversed (right to left) as the intention is to stitch manga pages.
-Passing that parameter means
 
 `-o` Allows specifying the name of the output file when manually specifying the files to stitch.
 The output name does not need to contain the file extension.
