@@ -57,7 +57,9 @@ def is_valid_dir(entry: DirEntry[str]) -> bool:
     return entry.is_dir() and any(f.is_file() and f.name.endswith(".png") for f in os.scandir(entry.path))
 
 def stitch_subdir(subdir: str, mode: str, reverse: bool) -> None:
-    command: List[str] = ["magick", "convert", f"{subdir}/*.png", "-reverse", mode, f"{subdir}.png"] if reverse else ["magick", "convert", f"{subdir}/*.png", mode, f"{subdir}.png"]
+    command: List[str] = ["magick", "convert", f"{subdir}/*.png", mode, f"{subdir}.png"]
+    if reverse:
+        command.insert(3, "-reverse")
     subprocess.call(command)
     print(f"Folder {path.join(os.getcwd(), subdir)} stitched to file {subdir}.png")
 
@@ -66,20 +68,22 @@ def stitch_files(files: List[str], direction: Direction, reverse: bool, output: 
     if not all(path.isfile(f) and f.endswith(".png") for f in files):
         print("Invalid files passed, aborting")
         return
-
     if output is None:
         output = "-".join(Path(path.basename(f)).stem for f in files)
-    command: List[str] = ["magick", "convert", *files, "-reverse", direction.value, f"{output}.png"] if reverse else ["magick", "convert", *files, direction.value, f"{output}.png"]
+    command: List[str] = ["magick", "convert", *files, direction.value, f"{output}.png"]
+    if reverse:
+        command.insert(-2, "-reverse")
     subprocess.call(command)
     print(f"Files stitched to file {output}.png")
 
 def show_help() -> None:
     print("File stitcher help")
-    print("Usage: stitcher [-v|-h] [-a] [-r] [*files to stitch]")
+    print("Usage: stitcher [-v|-h] [-a] [-r] [-o %output_name%] [*files to stitch]")
     print("-v:   Vertical file stitching, up to down order by default")
     print("-h:   Horizontal file stitching, right to left order by default")
     print("-a:   Stitch files in all subfolders together, if this is used, files should not be specified")
     print("-r:   Reverse file order while stitching")
+    print("-o:   Specifies the output file name when -a not passed")
     print("help: Show this message")
 
 
