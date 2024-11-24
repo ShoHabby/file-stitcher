@@ -24,16 +24,24 @@ def main() -> None:
             show_help()
         case ["-v", "-a"] | ["-v", "-a", "-r"] | ["-v", "-r", "-a"]:
             stitch_all_subdirs(Direction.VERTICAL, len(args) == 3)
+        case ["-v", "-r", "-o", output, _, _, *_] | ["-v", "-o", output, "-r", _, _, *_]:
+            stitch_files(args[4:], Direction.VERTICAL, True, output)
+        case ["-v", "-o", output, _, _, *_]:
+            stitch_files(args[3:], Direction.VERTICAL, False, output)
         case ["-v", "-r", _, _, *_]:
-            stitch_files(args[2:], Direction.VERTICAL, True)
+            stitch_files(args[2:], Direction.VERTICAL, True, None)
         case ["-v", _, _, *_]:
-            stitch_files(args[1:], Direction.VERTICAL, False)
+            stitch_files(args[1:], Direction.VERTICAL, False, None)
         case ["-h", "-a"] | ["-h", "-a", "-r"] | ["-h", "-r", "-a"]:
             stitch_all_subdirs(Direction.HORIZONTAL, len(args) == 2)    # Reverse by default
+        case ["-h", "-r", "-o", output, _, _, *_] | ["-h", "-o", output, "-r", _, _, *_]:
+            stitch_files(args[4:], Direction.HORIZONTAL, False, output) # Reverse by default
+        case ["-h", "-o", output, _, _, *_]:
+            stitch_files(args[3:], Direction.HORIZONTAL, True, output)  # Reverse by default
         case ["-h", "-r", _, _, *_]:
-            stitch_files(args[2:], Direction.HORIZONTAL, False)         # Reverse by default
+            stitch_files(args[2:], Direction.HORIZONTAL, False, None)   # Reverse by default
         case ["-h", _, _, *_]:
-            stitch_files(args[1:], Direction.HORIZONTAL, True)          # Reverse by default
+            stitch_files(args[1:], Direction.HORIZONTAL, True, None)    # Reverse by default
         case _:
             print("Invalid program arguments")
             show_help()
@@ -54,14 +62,15 @@ def stitch_subdir(subdir: str, mode: str, reverse: bool) -> None:
     subprocess.call(command)
     print(f"Folder {path.join(os.getcwd(), subdir)} stitched to file {subdir}.png")
 
-def stitch_files(files: List[str], direction: Direction, reverse: bool) -> None:
+def stitch_files(files: List[str], direction: Direction, reverse: bool, output: str | None) -> None:
     print(f"{direction} stitching of specified files...")
     if not all(path.isfile(f) and f.endswith(".png") for f in files):
         print("Invalid files passed, aborting")
         return
 
     mode: str = "-append" if direction == Direction.VERTICAL else "+append"
-    output: str = "-".join(Path(path.basename(f)).stem for f in files)
+    if output is None:
+        output = "-".join(Path(path.basename(f)).stem for f in files)
     command: List[str] = ["magick", "convert", *files, "-reverse", mode, f"{output}.png"] if reverse else ["magick", "convert", *files, mode, f"{output}.png"]
     subprocess.call(command)
     print(f"Files stitched to file {output}.png")
@@ -74,7 +83,6 @@ def show_help() -> None:
     print("-a:   Stitch files in all subfolders together, if this is used, files should not be specified")
     print("-r:   Reverse file order while stitching")
     print("help: Show this message")
-    pass
 
 
 if __name__ == "__main__":
