@@ -2,16 +2,16 @@
 import multiprocessing
 import subprocess
 import sys
-from enum import Enum, auto
+from enum import Enum
 from itertools import repeat
 from os import DirEntry, path
 from pathlib import Path
 from typing import List
 
 
-class Direction(Enum):
-    VERTICAL   = auto()
-    HORIZONTAL = auto()
+class Direction(str, Enum):
+    VERTICAL   = "-append"
+    HORIZONTAL = "+append"
 
     def __str__(self) -> str:
         return self.name.title()
@@ -50,9 +50,8 @@ def stitch_all_subdirs(direction: Direction, reverse: bool) -> None:
     print(f"{direction} stitching of all subfolders...")
     cwd: str = os.getcwd()
     subdirs: List[str] = [entry.name for entry in os.scandir(cwd) if is_valid_dir(entry)]
-    mode: str = "-append" if direction == Direction.VERTICAL else "+append"
     with multiprocessing.Pool() as pool:
-        pool.starmap(stitch_subdir, zip(subdirs, repeat(mode), repeat(reverse)))
+        pool.starmap(stitch_subdir, zip(subdirs, repeat(direction.value), repeat(reverse)))
 
 def is_valid_dir(entry: DirEntry[str]) -> bool:
     return entry.is_dir() and any(f.is_file() and f.name.endswith(".png") for f in os.scandir(entry.path))
@@ -68,10 +67,9 @@ def stitch_files(files: List[str], direction: Direction, reverse: bool, output: 
         print("Invalid files passed, aborting")
         return
 
-    mode: str = "-append" if direction == Direction.VERTICAL else "+append"
     if output is None:
         output = "-".join(Path(path.basename(f)).stem for f in files)
-    command: List[str] = ["magick", "convert", *files, "-reverse", mode, f"{output}.png"] if reverse else ["magick", "convert", *files, mode, f"{output}.png"]
+    command: List[str] = ["magick", "convert", *files, "-reverse", direction.value, f"{output}.png"] if reverse else ["magick", "convert", *files, direction.value, f"{output}.png"]
     subprocess.call(command)
     print(f"Files stitched to file {output}.png")
 
