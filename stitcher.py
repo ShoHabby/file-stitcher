@@ -85,7 +85,7 @@ def is_valid_dir(entry: DirEntry[str]) -> bool:
     return entry.is_dir() and any(f.is_file() and f.name.endswith(".png") for f in os.scandir(entry.path))
 
 def stitch_subdir(subdir: str, mode: str, reverse: bool, prefix: str) -> None:
-    command: List[str] = ["magick", "convert", f"{subdir}/*.png", mode, f"{prefix}{subdir}.png"]
+    command: List[str] = ["magick", f"{subdir}/*.png", mode, f"{prefix}{subdir}.png"]
     if reverse:
         command.insert(3, "-reverse")
     subprocess.call(command)
@@ -98,7 +98,7 @@ def stitch_files(files: List[str], direction: Direction, reverse: bool, output: 
         return
     if output is None:
         output = "-".join(Path(path.basename(f)).stem for f in files)
-    command: List[str] = ["magick", "convert", *files, direction.value, f"{output}.png"]
+    command: List[str] = ["magick", *files, direction.value, f"{output}.png"]
     if reverse:
         command.insert(-2, "-reverse")
     subprocess.call(command)
