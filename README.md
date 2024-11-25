@@ -1,5 +1,5 @@
 # Stitcher
-This is a helper process to stitch images together using ImageMagick
+ImageMagick powered image stitcher for manga or longstrip usage.
 
 ## Installation 
 Python >= 3.10 and [ImageMagick](https://imagemagick.org/script/download.php) need to be installed.
