@@ -2,9 +2,9 @@
 ImageMagick powered image stitcher for manga or longstrip usage.
 
 ## Installation 
-Python >= 3.10 and [ImageMagick](https://imagemagick.org/script/download.php) need to be installed.
+Python 3.10+ and [ImageMagick](https://imagemagick.org/script/download.php) 7.0+ need to be installed.
 
-Then the utility can be installed by running `pip install git+https://github.com/ShoHabby/file-stitcher`
+This script can be installed by running `pip install git+https://github.com/ShoHabby/file-stitcher`
 
 ## Usage
 `stitcher [-v|-h] [-a] [-r] [-o %output_name%] [*files]`
