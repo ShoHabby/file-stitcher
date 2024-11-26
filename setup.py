@@ -2,7 +2,7 @@
 
 setup(
     name = "stitcher",
-    version = "1.2.1",
+    version = "1.2.2",
     author = "stupid_chris",
     author_email = "christophe_savard@hotmail.ca",
     license = "MIT",
