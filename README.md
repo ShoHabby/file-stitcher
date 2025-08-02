@@ -1,3 +1,6 @@
+# DEPRECATION NOTICE
+Work is now instead being done on [ImageStitcher](https://github.com/ShoHabby/ImageStitcher), thank you!
+
 # Stitcher
 ImageMagick powered image stitcher for manga or longstrip usage.
 
